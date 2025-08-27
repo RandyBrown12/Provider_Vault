@@ -15,5 +15,16 @@ repos:
         args: ["--branch", "main"]
     -   id: requirements-txt-fixer
     -   id: check-docstring-first
+-   repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: v0.12.10
+    hooks:
+      - id: ruff-check
+        args: ["--fix"]
+      - id: ruff-format
+-   repo: https://github.com/psf/black
+    rev: 23.3.0
+    hooks:
+      - id: black
+        language_version: python3.13.1
 default_language_version:
   python: python3.13.1
