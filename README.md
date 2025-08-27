@@ -6,7 +6,6 @@
 - **Python** 3.11 or higher
 - **PostgreSQL** 17.2 or higher
 - **uv** 0.7.9 or higher (install globally for virtual environment management)
-
 ---
 
 ## Installation
@@ -33,6 +32,8 @@
 	```bash
 	uv pip install -r requirements.txt
 	```
+
+4. **Change or copy .env.template to .env and add in your environment variables**
 
 ---
 
