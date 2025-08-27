@@ -39,10 +39,10 @@
 
 ## Running the Project
 
-Start the Django development server:
+Start the Django development server inside the provider_vault_django folder containing manage.py:
 
 ```bash
-python provider_vault_django/manage.py runserver
+python manage.py runserver
 ```
 
 The application will be available at [http://127.0.0.1:8000/](http://127.0.0.1:8000/).
