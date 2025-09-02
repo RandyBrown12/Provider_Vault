@@ -17,9 +17,8 @@ def get_element(request):
     if value is None:
         return HttpResponse("Invalid value", status=400)
 
-    try:
-        value = int(value)
-    except ValueError:
+    value = int(value)
+    if value is None:
         return HttpResponse("Value is not a number!", status=400)
 
     value += 1

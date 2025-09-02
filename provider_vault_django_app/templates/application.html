@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Django + HTMX Example</title>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+</head>
+<body>
+    <h1>Django + HTMX Demo</h1>
+
+    <div id="value">0</div>
+    <button
+        hx-get="/get_element/"
+        hx-target="#value"
+        hx-swap="innerHTML"
+        hx-vals="js:{value: document.getElementById('value').innerText}">
+        Increase Value
+    </button>
+</body>
+</html>
