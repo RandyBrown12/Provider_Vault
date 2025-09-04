@@ -15,7 +15,7 @@ Welcome! Follow these steps to get started with local development and contributi
       D -- Passed - Code is merged with branch --> E[Perform GitHub Actions Testing]
       E -- Failed --> B
       E -- Passed --> F[Perform Private Deploy to Server]
-      F --> G[Perform User Acceptance Testing(UAT)]
+      F --> G[Perform User Acceptance Testing]
       G -- Failed --> B
       G -- Passed --> H[Final Product is deployed]
 ```
