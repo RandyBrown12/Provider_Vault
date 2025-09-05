@@ -24,6 +24,6 @@ jobs:
       - name: Add Env File
         run: |
             cp .env.template .env
-            sed -i 's/SECRET_KEY=""/SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}/g' .env
+            sed -i "s/SECRET_KEY=""/SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}/g" .env
       - name: Run Tests
         run: python manage.py test
