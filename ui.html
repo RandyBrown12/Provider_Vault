@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProviderVault - Medical Provider Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #000000;
+            min-height: 100vh;
+            color: #ffffff;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(40, 40, 40, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .notification-badge {
+            position: relative;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .badge-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ff4757;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Main Layout */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 30px;
+            min-height: calc(100vh - 140px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: rgba(40, 40, 40, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 30px 0;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 30px;
+            color: #cccccc;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            border-left-color: #667eea;
+        }
+
+        .nav-icon {
+            margin-right: 15px;
+            font-size: 18px;
+        }
+
+        /* Content Area */
+        .content {
+            display: grid;
+            gap: 30px;
+        }
+
+        /* Quick Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(40, 40, 40, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #cccccc;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .stat-trend {
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .trend-up { color: #2ed573; }
+        .trend-down { color: #ff4757; }
+
+        /* Main Content Cards */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+
+        .card {
+            background: rgba(40, 40, 40, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #555555;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #555555;
+            color: #ffffff;
+            border: 1px solid #666666;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: #666666;
+        }
+
+        /* Document List */
+        .document-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #555555;
+        }
+
+        .document-item:last-child {
+            border-bottom: none;
+        }
+
+        .document-info {
+            flex: 1;
+        }
+
+        .document-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .document-meta {
+            font-size: 14px;
+            color: #cccccc;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-verified { background: #d4edda; color: #155724; }
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-expired { background: #f8d7da; color: #721c24; }
+
+        /* Search Bar */
+        .search-container {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px 20px 15px 50px;
+            border: 2px solid #555555;
+            border-radius: 12px;
+            font-size: 16px;
+            background: #333333;
+            color: #ffffff;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #cccccc;
+        }
+
+        /* Notifications Panel */
+        .notification-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 15px 0;
+            border-bottom: 1px solid #555555;
+        }
+
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .notification-warning { background: #fff3cd; color: #856404; }
+        .notification-success { background: #d4edda; color: #155724; }
+        .notification-info { background: #cce7ff; color: #004085; }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .notification-text {
+            font-size: 14px;
+            color: #cccccc;
+            margin-bottom: 5px;
+        }
+
+        .notification-time {
+            font-size: 12px;
+            color: #999999;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .quick-action-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 15px;
+            background: rgba(102, 126, 234, 0.1);
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 12px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .quick-action-btn:hover {
+            background: rgba(102, 126, 234, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                padding: 15px 20px;
+            }
+
+            .container {
+                padding: 10px;
+            }
+        }
+
+        /* Animations */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card, .stat-card {
+            animation: slideInUp 0.6s ease forwards;
+        }
+
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.2s; }
+        .card:nth-child(3) { animation-delay: 0.3s; }
+        .stat-card:nth-child(1) { animation-delay: 0.1s; }
+        .stat-card:nth-child(2) { animation-delay: 0.2s; }
+        .stat-card:nth-child(3) { animation-delay: 0.3s; }
+        .stat-card:nth-child(4) { animation-delay: 0.4s; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">ProviderVault</div>
+            <div class="user-info">
+                <div class="notification-badge">
+                    🔔
+                    <span class="badge-count">3</span>
+                </div>
+                <div class="user-avatar">DR</div>
+                <div>
+                    <div style="font-weight: 600;">Chen Chen</div>
+                    <div style="font-size: 14px; color: #666;">Student</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Layout -->
+        <div class="main-layout">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <nav>
+                    <a href="#" class="nav-item active">
+                        <span class="nav-icon">📊</span>
+                        Dashboard
+                    </a>
+                    <a href="#" class="nav-item">
+                        <span class="nav-icon">📄</span>
+                        Documents
+                    </a>
+                    <a href="#" class="nav-item">
+                        <span class="nav-icon">🏥</span>
+                        Credentials
+                    </a>
+                    <a href="#" class="nav-item">
+                        <span class="nav-icon">📋</span>
+                        Licenses
+                    </a>
+                    <a href="#" class="nav-item">
+                        <span class="nav-icon">🎓</span>
+                        Education
+                    </a>
+                    <a href="#" class="nav-item">
+                        <span class="nav-icon">💼</span>
+                        Experience
+                    </a>
+                    <a href="#" class="nav-item">
+                        <span class="nav-icon">📊</span>
+                        Reports
+                    </a>
+                    <a href="#" class="nav-item">
+                        <span class="nav-icon">⚙️</span>
+                        Settings
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="content">
+                <!-- Quick Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" style="color: #2ed573;">24</div>
+                        <div class="stat-label">Active Credentials</div>
+                        <div class="stat-trend trend-up">
+                            ↗ +3 this month
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" style="color: #E30022;">2</div>
+                        <div class="stat-label">Expiring Soon</div>
+                        <div class="stat-trend trend-down">
+                            ⚠️ Within 30 days
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" style="color: #FFFFFF;">156</div>
+                        <div class="stat-label">Total Documents</div>
+                        <div class="stat-trend trend-up">
+                            ↗ +12 this week
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" style="color: #2ed573;">98%</div>
+                        <div class="stat-label">Compliance Score</div>
+                        <div class="stat-trend trend-up">
+                            ↗ +2% improved
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content Grid -->
+                <div class="content-grid">
+                    <!-- Recent Documents -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Recent Documents</h2>
+                            <button class="btn-primary">Upload New</button>
+                        </div>
+
+                        <div class="search-container">
+                            <input type="text" class="search-input" placeholder="Search documents...">
+                            <span class="search-icon">🔍</span>
+                        </div>
+
+                        <div class="document-list">
+                            <div class="document-item">
+                                <div class="document-info">
+                                    <div class="document-name">Medical License - California</div>
+                                    <div class="document-meta">Expires: Dec 31, 2025 • Verified</div>
+                                </div>
+                                <span class="status-badge status-verified">Verified</span>
+                            </div>
+                            <div class="document-item">
+                                <div class="document-info">
+                                    <div class="document-name">DEA Registration</div>
+                                    <div class="document-meta">Expires: Mar 15, 2026 • Pending Review</div>
+                                </div>
+                                <span class="status-badge status-pending">Pending</span>
+                            </div>
+                            <div class="document-item">
+                                <div class="document-info">
+                                    <div class="document-name">Board Certification - Cardiology</div>
+                                    <div class="document-meta">Expires: Jun 30, 2024 • Expired</div>
+                                </div>
+                                <span class="status-badge status-expired">Expired</span>
+                            </div>
+                            <div class="document-item">
+                                <div class="document-info">
+                                    <div class="document-name">Malpractice Insurance</div>
+                                    <div class="document-meta">Expires: Dec 31, 2025 • Verified</div>
+                                </div>
+                                <span class="status-badge status-verified">Verified</span>
+                            </div>
+                            <div class="document-item">
+                                <div class="document-info">
+                                    <div class="document-name">CPR Certification</div>
+                                    <div class="document-meta">Expires: Sep 22, 2025 • Verified</div>
+                                </div>
+                                <span class="status-badge status-verified">Verified</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notifications & Quick Actions -->
+                    <div>
+                        <!-- Notifications -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="card-title">Notifications</h2>
+                                <button class="btn-secondary">Mark All Read</button>
+                            </div>
+
+                            <div class="notification-list">
+                                <div class="notification-item">
+                                    <div class="notification-icon notification-warning">⚠️</div>
+                                    <div class="notification-content">
+                                        <div class="notification-title">Document Expiring Soon</div>
+                                        <div class="notification-text">Board Certification expires in 15 days</div>
+                                        <div class="notification-time">2 hours ago</div>
+                                    </div>
+                                </div>
+                                <div class="notification-item">
+                                    <div class="notification-icon notification-success">✅</div>
+                                    <div class="notification-content">
+                                        <div class="notification-title">Verification Complete</div>
+                                        <div class="notification-text">Medical License has been verified</div>
+                                        <div class="notification-time">1 day ago</div>
+                                    </div>
+                                </div>
+                                <div class="notification-item">
+                                    <div class="notification-icon notification-info">ℹ️</div>
+                                    <div class="notification-content">
+                                        <div class="notification-title">Profile Updated</div>
+                                        <div class="notification-text">Contact information successfully updated</div>
+                                        <div class="notification-time">3 days ago</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="card" style="margin-top: 30px;">
+                            <div class="card-header">
+                                 <h2 class="card-title" style="color: #667eea;">Quick Actions</h2>
+                            </div>
+
+                            <div class="quick-actions">
+                                <a href="#" class="quick-action-btn">
+                                    <span>📄</span>
+                                    Upload Document
+                                </a>
+                                <a href="#" class="quick-action-btn">
+                                    <span>🔍</span>
+                                    Verify Credential
+                                </a>
+                                <a href="#" class="quick-action-btn">
+                                    <span>📊</span>
+                                    Generate Report
+                                </a>
+                                <a href="#" class="quick-action-btn">
+                                    <span>👤</span>
+                                    Update Profile
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Simple interactivity
+        document.addEventListener('DOMContentLoaded', function() {
+            // Search functionality
+            const searchInput = document.querySelector('.search-input');
+            const documentItems = document.querySelectorAll('.document-item');
+
+            searchInput.addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase();
+
+                documentItems.forEach(item => {
+                    const documentName = item.querySelector('.document-name').textContent.toLowerCase();
+                    if (documentName.includes(searchTerm)) {
+                        item.style.display = 'flex';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+
+            // Navigation active state
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            // Notification badge click
+            const notificationBadge = document.querySelector('.notification-badge');
+            notificationBadge.addEventListener('click', function() {
+                alert('Opening notifications panel...');
+            });
+
+            // Quick action buttons
+            const quickActionBtns = document.querySelectorAll('.quick-action-btn');
+            quickActionBtns.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const action = this.textContent.trim();
+                    alert(`${action} functionality would open here...`);
+                });
+            });
+
+            // Upload button
+            const uploadBtn = document.querySelector('.btn-primary');
+            uploadBtn.addEventListener('click', function() {
+                alert('Document upload modal would open here...');
+            });
+        });
+    </script>
+</body>
+</html>
