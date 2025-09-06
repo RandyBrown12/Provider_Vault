@@ -16,10 +16,9 @@ Including another URLconf
 """
 
 from django.urls import path
-from .views import application, get_element, home
+from .views import home, main_page
 
 urlpatterns = [
     path("", home, name="home"),
-    path("application/", application, name="application"),
-    path("get_element/", get_element, name="get_element"),
+    path("main_page/", main_page, name="main_page"),
 ]
