@@ -1,8 +1,8 @@
 import time
 import unittest
+from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 import os
 
 
@@ -11,20 +11,26 @@ class RegisterTest(unittest.TestCase):
         """
         Set up Selenium WebDriver for Chrome on a test server like GitHub Actions or locally.
         """
-        if os.getenv("ENVIRONMENT_STAGE") == "TEST":
+        # Add options to run Chrome in headless mode for CI environments
+        chrome_options = Options()
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("--disable-dev-shm-usage")
+
+        if os.getenv("ENVIRONMENT_STAGE") == "TEST" or True:
             for retries in range(5):
                 try:
                     self.browser = webdriver.Remote(
-                        command_executor="http://localhost:4444/wd/hub",
-                        desired_capabilities=DesiredCapabilities.CHROME,
+                        command_executor="http://selenium:4444/wd/hub",
+                        options=chrome_options,
                     )
+                    self.browser.get("http://host.docker.internal:8000/register/")
                     break
                 except Exception:
                     time.sleep(2)
         else:
             self.browser = webdriver.Chrome()
-
-        self.browser.get("http://localhost:8000/register/")
+            self.browser.get("http://localhost:8000/register/")
 
     def tearDown(self):
         self.browser.quit()
