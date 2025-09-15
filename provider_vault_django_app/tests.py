@@ -2,11 +2,28 @@ import time
 import unittest
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+import os
 
 
 class RegisterTest(unittest.TestCase):
     def setUp(self):
-        self.browser = webdriver.Chrome()
+        """
+        Set up Selenium WebDriver for Chrome on a test server like GitHub Actions or locally.
+        """
+        if os.getenv("ENVIRONMENT_STAGE") == "TEST":
+            for retries in range(5):
+                try:
+                    self.browser = webdriver.Remote(
+                        command_executor="http://localhost:4444/wd/hub",
+                        desired_capabilities=DesiredCapabilities.CHROME,
+                    )
+                    break
+                except Exception:
+                    time.sleep(2)
+        else:
+            self.browser = webdriver.Chrome()
+
         self.browser.get("http://localhost:8000/register/")
 
     def tearDown(self):

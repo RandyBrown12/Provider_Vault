@@ -11,6 +11,11 @@ on:
 jobs:
   RunTests:
     runs-on: ubuntu-latest
+    services:
+      selenium:
+        image: selenium/standalone-chrome:latest
+        ports:
+          - 4444:4444
     steps:
       - name: Checkout Code from this repository
         uses: actions/checkout@v4
@@ -35,4 +40,7 @@ jobs:
         run: |
           source .venv/bin/activate
           python manage.py runserver &
+          sleep 3
           python manage.py test
+        env:
+          ENVIRONMENT_STAGE: TEST
