@@ -1,0 +1,74 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Provider Vault - Register</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <script src="{% static 'js/app.js' %}"></script>
+</head>
+<body class="register_background">
+    <div class="register_container">
+        <form class="register_form modern_form" method="post" autocomplete="off">
+            {% csrf_token %}
+            <h1 class="register_form_title register_form_all_space">Register Account in Provider Vault</h1>
+            <div class="form_group">
+                <label for="first_name">First Name</label>
+                <input type="text" id="first_name" name="first_name" class="register_form_input modern_input" placeholder="Enter your first name" required />
+            </div>
+            <div class="form_group">
+                <label for="last_name">Last Name</label>
+                <input type="text" id="last_name" name="last_name" class="register_form_input modern_input" placeholder="Enter your last name" required />
+            </div>
+            <div class="form_group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" class="register_form_input modern_input" placeholder="Enter your email" required />
+            </div>
+            <div class="form_group">
+                <label for="password">Password</label>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    class="register_form_input modern_input"
+                    placeholder="Create a password"
+                    required
+                    hx-post="/check_password/"
+                    hx-trigger="input, keyup from:#confirm_password"
+                    hx-include="#confirm_password"
+                    hx-target="#password_check_msg"
+                    hx-swap="innerHTML"
+                />
+                <span id="password_check_msg" class="error_message"></span>
+                <ul id="password_suggestions" class="password-suggestions">
+                    <li>At least 8 characters</li>
+                    <li>Contains uppercase and lowercase letters</li>
+                    <li>Includes at least one number</li>
+                    <li>Includes at least one special character (!@#$%^&amp;*)</li>
+                </ul>
+            </div>
+            <div class="form_group">
+                <label for="confirm_password">Confirm Password</label>
+                <input
+                    type="password"
+                    id="confirm_password"
+                    name="confirm_password"
+                    class="register_form_input modern_input"
+                    placeholder="Confirm your password"
+                    required
+                    hx-post="/check_match/"
+                    hx-trigger="input, keyup from:#password"
+                    hx-include="#password"
+                    hx-target="#password_match_msg"
+                    hx-swap="innerHTML"
+                />
+                <span id="password_match_msg" class="error_message"></span>
+            </div>
+            <button onclick="register_user()" class="register_form_all_space register_form_button singlecolor_button">Register</button>
+        </form>
+    </div>
+</body>
+</html>

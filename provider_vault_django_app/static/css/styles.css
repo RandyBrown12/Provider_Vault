@@ -1,0 +1,142 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Roboto:wght@400;700&display=swap');
+
+body, .register_background {
+    font-family: 'Inter', 'Roboto', 'Segoe UI', 'Nunito Sans', Arial, sans-serif;
+}
+
+.register_form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+    gap: 1rem;
+    width: 70%;
+    height: 100%;
+    margin-inline: auto;
+    align-content: center;
+    justify-content: center;
+    background-color: whitesmoke;
+    padding-inline: 2em;
+    padding-block: 1.5em;
+}
+
+.register_form_all_space {
+    grid-column: span 2;
+}
+
+.register_form_button {
+    width: 70%;
+    margin-inline: auto;
+}
+
+.register_form_title {
+    color: black;
+    margin-inline: auto;
+    font-family: 'Inter', 'Roboto', 'Segoe UI', 'Nunito Sans', Arial, sans-serif;
+}
+
+.register_background {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.register_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.register_form.modern_form {
+    background: #fff;
+    padding: 2.5rem 2rem;
+    border-radius: 1.2rem;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.register_form_title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.form_group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.register_form_input.modern_input {
+    padding: 0.75rem 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    background: #f7fafc;
+    transition: border-color 0.2s;
+    font-family: inherit;
+}
+
+.register_form_input.modern_input:focus {
+    border-color: #3182ce;
+    outline: none;
+    background: #fff;
+}
+
+.register_form_button.modern_button {
+    background: linear-gradient(90deg, #3182ce 0%, #63b3ed 100%);
+    color: #fff;
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.9rem 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    margin-top: 1rem;
+    font-family: inherit;
+}
+
+.register_form_button.modern_button:hover {
+    background: linear-gradient(90deg, #2563eb 0%, #4299e1 100%);
+    transform: translateY(-2px) scale(1.02);
+}
+
+.singlecolor_button {
+    background: #3182ce;
+    color: #fff;
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.9rem 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    margin-top: 1rem;
+    font-family: inherit;
+}
+
+.singlecolor_button:hover {
+    background: #2563eb;
+    transform: translateY(-2px) scale(1.02);
+}
+
+.password-suggestions {
+    font-size: 0.95em;
+    color: #555;
+    margin: 0.5em 0 0 0.5em;
+    padding-left: 1.2em;
+}
+
+.error_message {
+    color: red;
+    font-size: 0.9em;
+}
