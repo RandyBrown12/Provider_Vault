@@ -191,6 +191,52 @@ class RegisterTest(unittest.TestCase):
         time.sleep(0.5)
         self.assertEqual("", password_match_msg.text)
 
+    def test_password_submit_error_messages(self):
+        """Check if password check message is empty when both fields are empty"""
+        first_name = self.browser.find_element(By.ID, "first_name")
+        last_name = self.browser.find_element(By.ID, "last_name")
+        email = self.browser.find_element(By.ID, "email")
+        password = self.browser.find_element(By.ID, "password")
+        confirm_password = self.browser.find_element(By.ID, "confirm_password")
+        register_button = self.browser.find_element(By.ID, "register_button")
+
+        first_name.send_keys("John")
+        last_name.send_keys("Doe")
+        email.send_keys("john.doe@example.com")
+        password.send_keys("Password1")
+        confirm_password.send_keys("Password1")
+        time.sleep(0.5)
+        register_button.click()
+
+        alert = self.browser.switch_to.alert
+        alert_text = alert.text
+        self.assertEqual(
+            "There are error messages displayed. Please fix these issues", alert_text
+        )
+        alert.accept()
+
+    def test_password_submit_correct(self):
+        """Check if password check message is empty when both fields are empty"""
+        first_name = self.browser.find_element(By.ID, "first_name")
+        last_name = self.browser.find_element(By.ID, "last_name")
+        email = self.browser.find_element(By.ID, "email")
+        password = self.browser.find_element(By.ID, "password")
+        confirm_password = self.browser.find_element(By.ID, "confirm_password")
+        register_button = self.browser.find_element(By.ID, "register_button")
+
+        first_name.send_keys("John")
+        last_name.send_keys("Doe")
+        email.send_keys("john.doe@example.com")
+        password.send_keys("Password1!")
+        confirm_password.send_keys("Password1!")
+        time.sleep(0.5)
+        register_button.click()
+
+        alert = self.browser.switch_to.alert
+        alert_text = alert.text
+        self.assertEqual("Registration Complete!", alert_text)
+        alert.accept()
+
 
 if __name__ == "__main__":
     unittest.main()

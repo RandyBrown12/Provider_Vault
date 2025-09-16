@@ -4,6 +4,13 @@ function register_user() {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
     const confirmPassword = document.getElementById('confirm_password').value;
+    const password_error_message = document.getElementById('password_check_msg').innerText;
+    const confirm_password_error_message = document.getElementById('password_match_msg').innerText;
+
+    if(password_error_message || confirm_password_error_message) {
+        window.alert('There are error messages displayed. Please fix these issues');
+        return;
+    }
 
     if (!firstName) {
         window.alert('There is no First Name Inputted!');
