@@ -3,7 +3,6 @@ import unittest
 from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-import os
 
 
 class RegisterTest(unittest.TestCase):
@@ -17,20 +16,8 @@ class RegisterTest(unittest.TestCase):
         chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument("--disable-dev-shm-usage")
 
-        if os.getenv("ENVIRONMENT_STAGE") == "TEST" or True:
-            for retries in range(5):
-                try:
-                    self.browser = webdriver.Remote(
-                        command_executor="http://selenium:4444/wd/hub",
-                        options=chrome_options,
-                    )
-                    self.browser.get("http://host.docker.internal:8000/register/")
-                    break
-                except Exception:
-                    time.sleep(2)
-        else:
-            self.browser = webdriver.Chrome()
-            self.browser.get("http://localhost:8000/register/")
+        self.browser = webdriver.Chrome(options=chrome_options)
+        self.browser.get("http://localhost:8000/register/")
 
     def tearDown(self):
         self.browser.quit()
