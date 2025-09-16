@@ -29,7 +29,7 @@ class RegisterTest(unittest.TestCase):
     - Must include at least one special character (!@#$%^&*)
     """
 
-    def test_password_matching_first_check_no_character(self):
+    def test_password_first_check_no_character(self):
         """Check if password is minimum length of 8 characters"""
         password_input = self.browser.find_element(By.ID, "password")
         password_check_msg = self.browser.find_element(By.ID, "password_check_msg")
@@ -41,7 +41,7 @@ class RegisterTest(unittest.TestCase):
             "Password must be at least 8 characters long!", password_check_msg.text
         )
 
-    def test_password_matching_first_check_eight_characters(self):
+    def test_password_first_check_eight_characters(self):
         """Check if password is minimum length of 8 characters"""
         password_input = self.browser.find_element(By.ID, "password")
         password_check_msg = self.browser.find_element(By.ID, "password_check_msg")
@@ -53,7 +53,7 @@ class RegisterTest(unittest.TestCase):
             "Password must be at least 8 characters long!", password_check_msg.text
         )
 
-    def test_password_matching_second_check_all_lowercase(self):
+    def test_password_second_check_all_lowercase(self):
         """Check if password contains both uppercase and lowercase letters"""
         password_input = self.browser.find_element(By.ID, "password")
         password_check_msg = self.browser.find_element(By.ID, "password_check_msg")
@@ -66,7 +66,7 @@ class RegisterTest(unittest.TestCase):
             password_check_msg.text,
         )
 
-    def test_password_matching_second_check_all_uppercase(self):
+    def test_password_second_check_all_uppercase(self):
         """Check if password contains both uppercase and lowercase letters"""
         password_input = self.browser.find_element(By.ID, "password")
         password_check_msg = self.browser.find_element(By.ID, "password_check_msg")
@@ -79,7 +79,7 @@ class RegisterTest(unittest.TestCase):
             password_check_msg.text,
         )
 
-    def test_password_matching_second_check_mixed_case(self):
+    def test_password_second_check_mixed_case(self):
         """Check if password contains both uppercase and lowercase letters"""
         password_input = self.browser.find_element(By.ID, "password")
         password_check_msg = self.browser.find_element(By.ID, "password_check_msg")
@@ -92,7 +92,7 @@ class RegisterTest(unittest.TestCase):
             password_check_msg.text,
         )
 
-    def test_password_matching_third_check_no_number(self):
+    def test_password_third_check_no_number(self):
         """Check if password includes at least one number"""
         password_input = self.browser.find_element(By.ID, "password")
         password_check_msg = self.browser.find_element(By.ID, "password_check_msg")
@@ -104,7 +104,7 @@ class RegisterTest(unittest.TestCase):
             "Password must include at least one number!", password_check_msg.text
         )
 
-    def test_password_matching_third_check_with_number(self):
+    def test_password_third_check_with_number(self):
         """Check if password includes at least one number"""
         password_input = self.browser.find_element(By.ID, "password")
         password_check_msg = self.browser.find_element(By.ID, "password_check_msg")
@@ -116,7 +116,7 @@ class RegisterTest(unittest.TestCase):
             "Password must include at least one number!", password_check_msg.text
         )
 
-    def test_password_matching_fourth_check_no_special_character(self):
+    def test_password_fourth_check_no_special_character(self):
         """Check if password includes at least one special character (!@#$%^&*)"""
         password_input = self.browser.find_element(By.ID, "password")
         password_check_msg = self.browser.find_element(By.ID, "password_check_msg")
@@ -129,7 +129,7 @@ class RegisterTest(unittest.TestCase):
             password_check_msg.text,
         )
 
-    def test_password_matching_fourth_check_with_special_character_not_listed(self):
+    def test_password_fourth_check_with_special_character_not_listed(self):
         """Check if password includes at least one special character (!@#$%^&*)"""
         password_input = self.browser.find_element(By.ID, "password")
         password_check_msg = self.browser.find_element(By.ID, "password_check_msg")
@@ -142,7 +142,7 @@ class RegisterTest(unittest.TestCase):
             password_check_msg.text,
         )
 
-    def test_password_matching_fourth_check_with_special_character(self):
+    def test_password_fourth_check_with_special_character(self):
         """Check if password includes at least one special character (!@#$%^&*)"""
         password_input = self.browser.find_element(By.ID, "password")
         password_check_msg = self.browser.find_element(By.ID, "password_check_msg")
@@ -154,6 +154,42 @@ class RegisterTest(unittest.TestCase):
             "Password must include at least one special character (!@#$%^&*)!",
             password_check_msg.text,
         )
+
+    def test_password_all_checks_pass(self):
+        """Check if password meets all criteria"""
+        password_input = self.browser.find_element(By.ID, "password")
+        password_check_msg = self.browser.find_element(By.ID, "password_check_msg")
+
+        password_input.clear()
+        password_input.send_keys("Password1!")
+        time.sleep(0.5)
+        self.assertEqual("", password_check_msg.text)
+
+    def test_passwords_mismatch(self):
+        """Check if passwords do not match"""
+        password_input = self.browser.find_element(By.ID, "password")
+        confirm_password_input = self.browser.find_element(By.ID, "confirm_password")
+        password_match_msg = self.browser.find_element(By.ID, "password_match_msg")
+
+        password_input.clear()
+        confirm_password_input.clear()
+        password_input.send_keys("Password1!")
+        confirm_password_input.send_keys("Password2!")
+        time.sleep(0.5)
+        self.assertEqual("Passwords do not match!", password_match_msg.text)
+
+    def test_passwords_match(self):
+        """Check if passwords match"""
+        password_input = self.browser.find_element(By.ID, "password")
+        confirm_password_input = self.browser.find_element(By.ID, "confirm_password")
+        password_match_msg = self.browser.find_element(By.ID, "password_match_msg")
+
+        password_input.clear()
+        confirm_password_input.clear()
+        password_input.send_keys("Password1!")
+        confirm_password_input.send_keys("Password1!")
+        time.sleep(0.5)
+        self.assertEqual("", password_match_msg.text)
 
 
 if __name__ == "__main__":
