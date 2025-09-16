@@ -37,7 +37,7 @@
                     placeholder="Create a password"
                     required
                     hx-post="/check_password/"
-                    hx-trigger="input, keyup from:#confirm_password"
+                    hx-trigger="input"
                     hx-include="#confirm_password"
                     hx-target="#password_check_msg"
                     hx-swap="innerHTML"
@@ -60,7 +60,7 @@
                     placeholder="Confirm your password"
                     required
                     hx-post="/check_match/"
-                    hx-trigger="input, keyup from:#password"
+                    hx-trigger="input"
                     hx-include="#password"
                     hx-target="#password_match_msg"
                     hx-swap="innerHTML"
