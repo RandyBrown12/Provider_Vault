@@ -3,8 +3,6 @@ import unittest
 from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 
 
 class RegisterTest(unittest.TestCase):
@@ -165,8 +163,8 @@ class RegisterTest(unittest.TestCase):
         confirm_password_input = self.browser.find_element(By.ID, "confirm_password")
         password_match_msg = self.browser.find_element(By.ID, "password_match_msg")
 
-        password_input.send_keys("Password1!")
-        confirm_password_input.send_keys("Password2!")
+        password_input.send_keys("bptaTvji!")
+        confirm_password_input.send_keys("bptaTvji")
         time.sleep(0.5)
         self.assertEqual("Passwords do not match!", password_match_msg.text)
 
@@ -193,13 +191,10 @@ class RegisterTest(unittest.TestCase):
         first_name.send_keys("John")
         last_name.send_keys("Doe")
         email.send_keys("john.doe@example.com")
-        password.send_keys("Password1")
-        confirm_password.send_keys("Password1")
-        time.sleep(1)
+        password.send_keys("Hayhbjio232")
+        confirm_password.send_keys("Hayhbjio232")
+        time.sleep(0.5)
         register_button.click()
-
-        # Wait for alert to be present and throw error if there is no alert
-        WebDriverWait(self.browser, 3).until(EC.alert_is_present())
 
         alert = self.browser.switch_to.alert
         alert_text = alert.text
@@ -220,8 +215,8 @@ class RegisterTest(unittest.TestCase):
         first_name.send_keys("John")
         last_name.send_keys("Doe")
         email.send_keys("john.doe@example.com")
-        password.send_keys("Password1!")
-        confirm_password.send_keys("Password1!")
+        password.send_keys("Hayhbjio232!")
+        confirm_password.send_keys("Hayhbjio232!")
         time.sleep(0.5)
         register_button.click()
 
