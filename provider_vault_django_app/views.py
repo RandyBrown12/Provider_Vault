@@ -24,10 +24,10 @@ def check_match(request):
     """
     password = request.POST.get("password", "")
     confirm_password = request.POST.get("confirm_password", "")
-    if not password or not confirm_password:
-        return HttpResponse("Please enter a Password!", content_type="text/html")
     if password and confirm_password and password != confirm_password:
         return HttpResponse("Passwords do not match!", content_type="text/html")
+    elif not password or not confirm_password:
+        return HttpResponse("Please enter a Password!", content_type="text/html")
     return HttpResponse("", content_type="text/html")
 
 
