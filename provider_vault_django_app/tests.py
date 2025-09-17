@@ -198,7 +198,7 @@ class RegisterTest(unittest.TestCase):
         email = self.browser.find_element(By.ID, "email")
         password = self.browser.find_element(By.ID, "password")
         confirm_password = self.browser.find_element(By.ID, "confirm_password")
-        register_button = self.browser.find_element(By.ID, "register_button")
+        register_button = self.browser.find_element(By.ID, "register_form_button")
 
         first_name.send_keys("John")
         last_name.send_keys("Doe")
@@ -222,7 +222,7 @@ class RegisterTest(unittest.TestCase):
         email = self.browser.find_element(By.ID, "email")
         password = self.browser.find_element(By.ID, "password")
         confirm_password = self.browser.find_element(By.ID, "confirm_password")
-        register_button = self.browser.find_element(By.ID, "register_button")
+        register_button = self.browser.find_element(By.ID, "register_form_button")
 
         first_name.send_keys("John")
         last_name.send_keys("Doe")

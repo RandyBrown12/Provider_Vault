@@ -10,30 +10,30 @@
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     <script src="{% static 'js/app.js' %}"></script>
 </head>
-<body class="register_background">
-    <div class="register_container">
-        <form class="register_form modern_form" method="post" autocomplete="off">
+<body class="register_form_background">
+    <div class="register_form_container">
+        <form class="register_form_form" method="post" autocomplete="off">
             {% csrf_token %}
-            <h1 class="register_form_title register_form_all_space">Register Account in Provider Vault</h1>
-            <div class="form_group">
+            <h1 class="register_form_title">Register Account in Provider Vault</h1>
+            <div class="register_form_group">
                 <label for="first_name">First Name</label>
-                <input type="text" id="first_name" name="first_name" class="register_form_input modern_input" placeholder="Enter your first name" required />
+                <input type="text" id="first_name" name="first_name" class="register_form_input" placeholder="Enter your first name" required />
             </div>
-            <div class="form_group">
+            <div class="register_form_group">
                 <label for="last_name">Last Name</label>
-                <input type="text" id="last_name" name="last_name" class="register_form_input modern_input" placeholder="Enter your last name" required />
+                <input type="text" id="last_name" name="last_name" class="register_form_input" placeholder="Enter your last name" required />
             </div>
-            <div class="form_group">
+            <div class="register_form_group">
                 <label for="email">Email</label>
-                <input type="email" id="email" name="email" class="register_form_input modern_input" placeholder="Enter your email" required />
+                <input type="email" id="email" name="email" class="register_form_input" placeholder="Enter your email" required />
             </div>
-            <div class="form_group">
+            <div class="register_form_group">
                 <label for="password">Password</label>
                 <input
                     type="password"
                     id="password"
                     name="password"
-                    class="register_form_input modern_input"
+                    class="register_form_input"
                     placeholder="Create a password"
                     required
                     hx-post="/check_password/"
@@ -42,21 +42,21 @@
                     hx-target="#password_check_msg"
                     hx-swap="innerHTML"
                 />
-                <span id="password_check_msg" class="error_message"></span>
-                <ul id="password_suggestions" class="password-suggestions">
+                <span id="password_check_msg" class="register_form_error"></span>
+                <ul id="password_suggestions" class="register_form_suggestions">
                     <li>At least 8 characters</li>
                     <li>Contains uppercase and lowercase letters</li>
                     <li>Includes at least one number</li>
                     <li>Includes at least one special character (!@#$%^&amp;*)</li>
                 </ul>
             </div>
-            <div class="form_group">
+            <div class="register_form_group">
                 <label for="confirm_password">Confirm Password</label>
                 <input
                     type="password"
                     id="confirm_password"
                     name="confirm_password"
-                    class="register_form_input modern_input"
+                    class="register_form_input"
                     placeholder="Confirm your password"
                     required
                     hx-post="/check_match/"
@@ -65,9 +65,9 @@
                     hx-target="#password_match_msg"
                     hx-swap="innerHTML"
                 />
-                <span id="password_match_msg" class="error_message"></span>
+                <span id="password_match_msg" class="register_form_error"></span>
             </div>
-            <button onclick="register_user()" id="register_button" class="register_form_all_space register_form_button singlecolor_button">Register</button>
+            <button onclick="register_user()" id="register_form_button" class="register_form_button">Register</button>
         </form>
     </div>
 </body>
