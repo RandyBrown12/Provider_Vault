@@ -3,38 +3,42 @@ import unittest
 from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 
 class RegisterTest(unittest.TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpClass(cls):
         """
-        Set up Selenium WebDriver for Chrome on a test server like GitHub Actions or locally.
+        Runs once before all tests.
         """
-        # Add options to run Chrome in headless mode for CI environments
         chrome_options = Options()
         chrome_options.add_argument("--headless")
         chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument("--disable-dev-shm-usage")
 
-        self.browser = webdriver.Chrome(options=chrome_options)
+        cls.browser = webdriver.Chrome(options=chrome_options)
+
+    @classmethod
+    def tearDownClass(cls):
+        """
+        Runs once after all tests.
+        """
+        cls.browser.quit()
+
+    def setUp(self):
+        """
+        Runs before each test.
+        Clear all input fields.
+        """
         self.browser.get("http://localhost:8000/register/")
-
-    def tearDown(self):
-        self.browser.quit()
-
-    """
-    - Minimum length of 8 characters
-    - Must contain both uppercase and lowercase letters
-    - Must include at least one number
-    - Must include at least one special character (!@#$%^&*)
-    """
 
     def test_password_first_check_no_character(self):
         """Check if password is minimum length of 8 characters"""
         password_input = self.browser.find_element(By.ID, "password")
         password_check_msg = self.browser.find_element(By.ID, "password_check_msg")
 
-        password_input.clear()
         password_input.send_keys("the")
         time.sleep(0.5)
         self.assertEqual(
@@ -46,7 +50,6 @@ class RegisterTest(unittest.TestCase):
         password_input = self.browser.find_element(By.ID, "password")
         password_check_msg = self.browser.find_element(By.ID, "password_check_msg")
 
-        password_input.clear()
         password_input.send_keys("Password")
         time.sleep(0.5)
         self.assertNotEqual(
@@ -58,7 +61,6 @@ class RegisterTest(unittest.TestCase):
         password_input = self.browser.find_element(By.ID, "password")
         password_check_msg = self.browser.find_element(By.ID, "password_check_msg")
 
-        password_input.clear()
         password_input.send_keys("password1!")
         time.sleep(0.5)
         self.assertEqual(
@@ -71,7 +73,6 @@ class RegisterTest(unittest.TestCase):
         password_input = self.browser.find_element(By.ID, "password")
         password_check_msg = self.browser.find_element(By.ID, "password_check_msg")
 
-        password_input.clear()
         password_input.send_keys("PASSWORD1!")
         time.sleep(0.5)
         self.assertEqual(
@@ -84,7 +85,6 @@ class RegisterTest(unittest.TestCase):
         password_input = self.browser.find_element(By.ID, "password")
         password_check_msg = self.browser.find_element(By.ID, "password_check_msg")
 
-        password_input.clear()
         password_input.send_keys("Password1!")
         time.sleep(0.5)
         self.assertNotEqual(
@@ -97,7 +97,6 @@ class RegisterTest(unittest.TestCase):
         password_input = self.browser.find_element(By.ID, "password")
         password_check_msg = self.browser.find_element(By.ID, "password_check_msg")
 
-        password_input.clear()
         password_input.send_keys("Password!")
         time.sleep(0.5)
         self.assertEqual(
@@ -109,7 +108,6 @@ class RegisterTest(unittest.TestCase):
         password_input = self.browser.find_element(By.ID, "password")
         password_check_msg = self.browser.find_element(By.ID, "password_check_msg")
 
-        password_input.clear()
         password_input.send_keys("Password1!")
         time.sleep(0.5)
         self.assertNotEqual(
@@ -121,7 +119,6 @@ class RegisterTest(unittest.TestCase):
         password_input = self.browser.find_element(By.ID, "password")
         password_check_msg = self.browser.find_element(By.ID, "password_check_msg")
 
-        password_input.clear()
         password_input.send_keys("Password1")
         time.sleep(0.5)
         self.assertEqual(
@@ -134,7 +131,6 @@ class RegisterTest(unittest.TestCase):
         password_input = self.browser.find_element(By.ID, "password")
         password_check_msg = self.browser.find_element(By.ID, "password_check_msg")
 
-        password_input.clear()
         password_input.send_keys("Password1+")
         time.sleep(0.5)
         self.assertEqual(
@@ -147,7 +143,6 @@ class RegisterTest(unittest.TestCase):
         password_input = self.browser.find_element(By.ID, "password")
         password_check_msg = self.browser.find_element(By.ID, "password_check_msg")
 
-        password_input.clear()
         password_input.send_keys("Password1!")
         time.sleep(0.5)
         self.assertNotEqual(
@@ -160,7 +155,6 @@ class RegisterTest(unittest.TestCase):
         password_input = self.browser.find_element(By.ID, "password")
         password_check_msg = self.browser.find_element(By.ID, "password_check_msg")
 
-        password_input.clear()
         password_input.send_keys("Password1!")
         time.sleep(0.5)
         self.assertEqual("", password_check_msg.text)
@@ -171,8 +165,6 @@ class RegisterTest(unittest.TestCase):
         confirm_password_input = self.browser.find_element(By.ID, "confirm_password")
         password_match_msg = self.browser.find_element(By.ID, "password_match_msg")
 
-        password_input.clear()
-        confirm_password_input.clear()
         password_input.send_keys("Password1!")
         confirm_password_input.send_keys("Password2!")
         time.sleep(0.5)
@@ -184,8 +176,6 @@ class RegisterTest(unittest.TestCase):
         confirm_password_input = self.browser.find_element(By.ID, "confirm_password")
         password_match_msg = self.browser.find_element(By.ID, "password_match_msg")
 
-        password_input.clear()
-        confirm_password_input.clear()
         password_input.send_keys("Password1!")
         confirm_password_input.send_keys("Password1!")
         time.sleep(0.5)
@@ -205,8 +195,11 @@ class RegisterTest(unittest.TestCase):
         email.send_keys("john.doe@example.com")
         password.send_keys("Password1")
         confirm_password.send_keys("Password1")
-        time.sleep(0.5)
+        time.sleep(1)
         register_button.click()
+
+        # Wait for alert to be present and throw error if there is no alert
+        WebDriverWait(self.browser, 3).until(EC.alert_is_present())
 
         alert = self.browser.switch_to.alert
         alert_text = alert.text
