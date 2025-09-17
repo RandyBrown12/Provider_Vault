@@ -1,0 +1,37 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Provider Vault - Login</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <script src="{% static 'js/app.js' %}"></script>
+</head>
+<body class="register_background">
+    <div class="register_container">
+        <form class="register_form modern_form" method="post" autocomplete="off">
+            {% csrf_token %}
+            <h1 class="register_form_title register_form_all_space">Login</h1>
+            <div class="form_group">
+                <label for="first_name">Email</label>
+                <input type="text" id="first_name" name="first_name" class="register_form_input modern_input" placeholder="Enter your first name" required />
+            </div>
+            <div class="form_group">
+                <label for="password">Password</label>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    class="register_form_input modern_input"
+                    placeholder="Enter password"
+                    required
+                />
+            </div>
+            <button onclick="login_user()" id="register_button" class="register_form_all_space register_form_button singlecolor_button">Register</button>
+        </form>
+    </div>
+</body>
+</html>

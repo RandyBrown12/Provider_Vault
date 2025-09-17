@@ -16,6 +16,10 @@ def register(request):
     return render(request, "register.html")
 
 
+def login(request):
+    return render(request, "login.html")
+
+
 @require_POST
 def check_match(request):
     """

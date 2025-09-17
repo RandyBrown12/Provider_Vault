@@ -16,12 +16,13 @@ Including another URLconf
 """
 
 from django.urls import path
-from .views import check_match, check_password, home, main_page, register
+from .views import check_match, check_password, home, login, main_page, register
 
 urlpatterns = [
     path("", home, name="home"),
     path("main_page/", main_page, name="main_page"),
     path("register/", register, name="register"),
+    path("login/", login, name="login"),
     path(
         "check_match/", check_match, name="check_match"
     ),  # HTMX endpoint for element text matching

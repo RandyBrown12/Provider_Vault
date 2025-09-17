@@ -37,3 +37,7 @@ function register_user() {
 
     window.alert('Registration Complete!');
 }
+
+function login_user() {
+
+}
