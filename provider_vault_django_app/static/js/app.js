@@ -40,4 +40,5 @@ function register_user() {
 
 function login_user() {
 
+    window.alert("Test Login!");
 }
