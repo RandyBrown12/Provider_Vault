@@ -1,4 +1,6 @@
+bcrypt
 django
 dotenv
 pre-commit
+psycopg2
 selenium

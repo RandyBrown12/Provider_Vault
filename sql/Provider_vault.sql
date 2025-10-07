@@ -1,12 +1,14 @@
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 CREATE TABLE "users" (
-  "id" uuid PRIMARY KEY,
+  "id" uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   "email" varchar NOT NULL,
-  "password_hash" varchar NOT NULL,
+  "password_hash" BYTEA NOT NULL,
   "user_type" varchar NOT NULL,
-  "created_at" timestamp NOT NULL,
-  "updated_at" timestamp NOT NULL,
-  "is_active" boolean NOT NULL,
-  "last_login" timestamp NOT NUll
+  "created_at" timestamp NOT NULL DEFAULT NOW(),
+  "updated_at" timestamp NOT NULL DEFAULT NOW(),
+  "is_active" boolean NOT NULL DEFAULT TRUE,
+  "last_login" timestamp NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE "providers" (

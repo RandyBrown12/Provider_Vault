@@ -12,12 +12,12 @@
 </head>
 <body class="login_form_background">
     <div class="login_form_container">
-        <form class="login_form_form" method="post" autocomplete="off">
+        <form class="login_form_form" autocomplete="off">
             {% csrf_token %}
             <h1 class="login_form_title">Login</h1>
             <div class="login_form_group">
-                <label for="first_name">Email</label>
-                <input type="text" id="first_name" name="first_name" class="login_form_input" placeholder="Enter your first name" required />
+                <label for="email">Email</label>
+                <input type="text" id="email" name="email" class="login_form_input" placeholder="Enter your email" required />
             </div>
             <div class="login_form_group">
                 <label for="password">Password</label>
@@ -30,7 +30,7 @@
                     required
                 />
             </div>
-            <button onclick="login_user()" id="login_form_button" class="login_form_button">Login</button>
+            <button type="button" onclick="login_user()" id="login_form_button" class="login_form_button">Login</button>
         </form>
     </div>
 </body>

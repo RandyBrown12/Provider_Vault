@@ -12,7 +12,7 @@
 </head>
 <body class="register_form_background">
     <div class="register_form_container">
-        <form class="register_form_form" method="post" autocomplete="off">
+        <form class="register_form_form" autocomplete="off">
             {% csrf_token %}
             <h1 class="register_form_title">Register Account in Provider Vault</h1>
             <div class="register_form_group">
@@ -67,7 +67,7 @@
                 />
                 <span id="password_match_msg" class="register_form_error"></span>
             </div>
-            <button onclick="register_user()" id="register_form_button" class="register_form_button">Register</button>
+            <button type="button" onclick="register_user()" id="register_form_button" class="register_form_button">Register</button>
         </form>
     </div>
 </body>

@@ -1,4 +1,4 @@
-function register_user() {
+async function register_user() {
     const firstName = document.getElementById('first_name').value;
     const lastName = document.getElementById('last_name').value;
     const email = document.getElementById('email').value;
@@ -29,16 +29,99 @@ function register_user() {
         return;
     }
 
-    // Check Passwords
     if(password !== confirmPassword) {
         window.alert('Password & Confirm Password does not match!');
         return;
     }
 
-    window.alert('Registration Complete!');
+    const response_text = await register_to_database(email, password);
+
+    if(response_text === "Registration Successful!") {
+        window.location.href = "/login"
+    } else {
+        window.alert(`${response_text}`);
+    }
+
 }
 
-function login_user() {
+async function login_user() {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
 
-    window.alert("Test Login!");
+    if (!email) {
+        window.alert('There is no Email Inputted!');
+        return;
+    } else if (!password) {
+        window.alert('There is no Password Inputted!');
+        return;
+    }
+
+    const response_text = await login_to_database(email, password);
+
+    console.log(response_text);
+    if(response_text === "Passwords match!") {
+        window.location.href = "/"
+    } else {
+        window.alert(`${response_text}`);
+    }
 }
+
+async function register_to_database(email, password) {
+    try
+    {
+        const response = await fetch("/register_to_database/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCookie("csrftoken")
+            },
+            body: JSON.stringify({
+                email: email,
+                password: password
+            })
+        });
+
+        if(!response.ok) {
+            throw new Error("4XX or 5XX error");
+        }
+
+        const data = await response.text();
+        return data;
+    } catch (error) {
+        console.log("Fetch error:", error.message);
+    }
+}
+
+async function login_to_database(email, password) {
+    try
+    {
+        const response = await fetch("/login_to_database/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCookie("csrftoken")
+            },
+            body: JSON.stringify({
+                email: email,
+                password: password
+            })
+        });
+
+        if(!response.ok) {
+            throw new Error("4XX or 5XX error");
+        }
+
+        const data = await response.text();
+        return data;
+    } catch (error) {
+        console.log("Fetch error:", error.message);
+    }
+}
+
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(";").shift();
+}
+
+const csrftoken = getCookie("csrftoken");
