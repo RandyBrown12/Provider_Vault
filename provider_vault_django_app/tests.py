@@ -1,11 +1,17 @@
 import time
 import unittest
+import bcrypt
 from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+from provider_vault_django_app.models import Users
+from django.test import TestCase
 
 
-class RegisterTest(unittest.TestCase):
+class RegisterTests(TestCase):
     @classmethod
     def setUpClass(cls):
         """
@@ -220,10 +226,103 @@ class RegisterTest(unittest.TestCase):
         time.sleep(0.5)
         register_button.click()
 
-        alert = self.browser.switch_to.alert
-        alert_text = alert.text
-        self.assertEqual("Registration Complete!", alert_text)
-        alert.accept()
+        WebDriverWait(self.browser, 10).until(
+            EC.url_changes("http://localhost:8000/register/")
+        )
+
+        redirected_url = self.browser.current_url
+        self.assertEqual("http://localhost:8000/login/", redirected_url)
+
+
+class LoginTests(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        """
+        Prequisites for all tests. Only runs once.
+        """
+        chrome_options = Options()
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("--disable-dev-shm-usage")
+
+        cls.browser = webdriver.Chrome(options=chrome_options)
+        password_hash = bcrypt.hashpw(
+            "TestPassword1!".encode("utf-8"), bcrypt.gensalt()
+        )
+
+        cls.user = Users.objects.create(
+            email="test@example.com", password_hash=password_hash, user_type="user"
+        )
+        cls.user.save()
+
+    @classmethod
+    def tearDownClass(cls):
+        """
+        Runs once after all tests.
+        """
+        cls.browser.quit()
+
+    def setUp(self):
+        """
+        Runs before each test.
+        Clear all input fields.
+        """
+        self.browser.get("http://localhost:8000/login/")
+
+    def test_mock_user_exists(self):
+        """Check if mock user exists in the database."""
+        user = Users.objects.filter(email="test@example.com").first()
+        self.assertEqual(user.email, "test@example.com")
+        self.assertEqual(user.user_type, "user")
+
+    def test_show_password_button(self):
+        """Check if show password button works"""
+        password_input = self.browser.find_element(By.ID, "login_password")
+        show_password_button = self.browser.find_element(By.ID, "toggle_password")
+
+        password_input.send_keys("Password1!")
+        time.sleep(0.5)
+
+        show_password_button.click()
+        time.sleep(0.5)
+        self.assertEqual("text", password_input.get_attribute("type"))
+
+        show_password_button.click()
+        time.sleep(0.5)
+        self.assertEqual("password", password_input.get_attribute("type"))
+
+    def test_login_incorrect_email(self):
+        """Check if login fails with incorrect email"""
+        email_input = self.browser.find_element(By.ID, "email")
+        password_input = self.browser.find_element(By.ID, "login_password")
+        login_button = self.browser.find_element(By.ID, "login_form_button")
+        error_message = self.browser.find_element(By.ID, "login_form_error")
+        email_input.send_keys("invalid@example.com")
+        password_input.send_keys("Password1!")
+        time.sleep(0.5)
+
+        login_button.click()
+        WebDriverWait(self.browser, 10).until(
+            EC.text_to_be_present_in_element(
+                (By.ID, "login_form_error"), "Invalid email or password!"
+            )
+        )
+        self.assertEqual("Invalid email or password!", error_message.text)
+
+    def test_login_correct_auth(self):
+        """Check if login succeeds with correct email and password"""
+        email_input = self.browser.find_element(By.ID, "email")
+        password_input = self.browser.find_element(By.ID, "login_password")
+        login_button = self.browser.find_element(By.ID, "login_form_button")
+        email_input.send_keys("test@example.com")
+        password_input.send_keys("TestPassword1!")
+        time.sleep(0.5)
+
+        login_button.click()
+        WebDriverWait(self.browser, 10).until(
+            EC.url_changes("http://localhost:8000/login/")
+        )
+        self.assertEqual("http://localhost:8000/", self.browser.current_url)
 
 
 if __name__ == "__main__":

@@ -2,10 +2,9 @@ import json
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.decorators.http import require_POST
-import psycopg2
 import dotenv
-import os
 import bcrypt
+from .models import Users
 
 dotenv.load_dotenv()
 
@@ -44,41 +43,23 @@ def login_to_database(request):
         )
 
     try:
-        conn = psycopg2.connect(
-            dbname=os.getenv("DB_NAME", ""),
-            user=os.getenv("DB_USERNAME", ""),
-            password=os.getenv("DB_PASSWORD", ""),
-            host=os.getenv("DB_HOST", ""),
-            port=os.getenv("DB_PORT", ""),
-        )
+        user = Users.objects.filter(email=email).first()
 
-        cursor = conn.cursor()
-
-        query = "SELECT password_hash FROM users WHERE email = %s "
-        cursor.execute(query, (email,))
-
-        user_password_hash = cursor.fetchone()
-        if not user_password_hash:
+        if user is None:
             return HttpResponse("Invalid email or password!", content_type="text/html")
-
         stored_password_hash = None
-        if isinstance(user_password_hash[0], memoryview):
-            stored_password_hash = user_password_hash[0].tobytes()
+        if isinstance(user.password_hash, memoryview):
+            stored_password_hash = bytes(user.password_hash)
         else:
-            stored_password_hash = user_password_hash[0]
-
+            stored_password_hash = user.password_hash
+        print(stored_password_hash)
         if bcrypt.checkpw(password.encode("utf-8"), stored_password_hash):
-            cursor.close()
-            conn.close()
             return HttpResponse("Passwords match!", content_type="text/html")
         else:
-            cursor.close()
-            conn.close()
             return HttpResponse("Incorrect password!", content_type="text/html")
     except Exception as e:
-        cursor.close()
-        conn.close()
-        return HttpResponse(f"An error occurred: {str(e)}", content_type="text/html")
+        print(str(e))
+        return HttpResponse("An error occurred", content_type="text/html")
 
 
 @require_POST
@@ -96,31 +77,15 @@ def register_to_database(request):
         return HttpResponse(
             "Please enter both email and password!", content_type="text/html"
         )
-
     try:
-        conn = psycopg2.connect(
-            dbname=os.getenv("DB_NAME", ""),
-            user=os.getenv("DB_USERNAME", ""),
-            password=os.getenv("DB_PASSWORD", ""),
-            host=os.getenv("DB_HOST", ""),
-            port=os.getenv("DB_PORT", ""),
-        )
-
-        cursor = conn.cursor()
         password_bytes = bytes(password, "utf-8")
         password_hash = bcrypt.hashpw(password_bytes, bcrypt.gensalt())
-
-        query = (
-            "INSERT INTO users (email, password_hash, user_type) VALUES (%s, %s, %s)"
+        user = Users.objects.create(
+            email=email, password_hash=password_hash, user_type="user"
         )
-        cursor.execute(query, (email, password_hash, "user"))
-        conn.commit()
-        cursor.close()
-        conn.close()
+        user.save()
         return HttpResponse("Registration Successful!", content_type="text/html")
     except Exception as e:
-        cursor.close()
-        conn.close()
         return HttpResponse(f"An error occurred: {str(e)}", content_type="text/html")
 
 

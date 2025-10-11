@@ -46,7 +46,7 @@ async function register_user() {
 
 async function login_user() {
     const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
+    const password = document.getElementById('login_password').value;
 
     if (!email) {
         window.alert('There is no Email Inputted!');
@@ -62,7 +62,8 @@ async function login_user() {
     if(response_text === "Passwords match!") {
         window.location.href = "/"
     } else {
-        window.alert(`${response_text}`);
+        const login_error_element = document.getElementById('login_form_error');
+        login_error_element.innerText = response_text;
     }
 }
 
@@ -125,3 +126,17 @@ function getCookie(name) {
 }
 
 const csrftoken = getCookie("csrftoken");
+
+function show_password_toggle() {
+    const password_element = document.getElementById("login_password");
+    const password_icon = document.getElementById("toggle_password");
+
+    if(password_element.type === "password") {
+        password_element.type = "text";
+        password_icon.src = "/static/img/eye-off.svg";
+    } else {
+        password_element.type = "password";
+        password_icon.src = "/static/img/eye.svg";
+    }
+
+}

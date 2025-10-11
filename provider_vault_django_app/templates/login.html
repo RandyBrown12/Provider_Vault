@@ -20,17 +20,28 @@
                 <input type="text" id="email" name="email" class="login_form_input" placeholder="Enter your email" required />
             </div>
             <div class="login_form_group">
-                <label for="password">Password</label>
-                <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    class="login_form_input"
-                    placeholder="Enter password"
-                    required
-                />
+                <label for="login_password">Password</label>
+                <div class="login_form_group_password_input">
+                    <input
+                        type="password"
+                        id="login_password"
+                        name="login_password"
+                        class="login_form_input"
+                        placeholder="Enter password"
+                        required
+                    />
+                    <img
+                        id="toggle_password"
+                        src="{% static 'img/eye.svg' %}"
+                        alt="Eye"
+                        class="show_password"
+                        onclick="show_password_toggle()"
+                    >
+                </img>
+                </div>
             </div>
             <button type="button" onclick="login_user()" id="login_form_button" class="login_form_button">Login</button>
+            <span id="login_form_error" class="login_form_error"> </span>
         </form>
     </div>
 </body>

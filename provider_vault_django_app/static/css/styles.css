@@ -111,6 +111,12 @@
     min-height: 100vh;
 }
 
+.login_form_error {
+    color: red;
+    font-size: 0.9em;
+    text-align: center;
+}
+
 .login_form_form {
     background: #fff;
     padding: 2.5rem 2rem;
@@ -174,4 +180,23 @@
 .login_form_button:hover {
     background: #2563eb;
     transform: translateY(-2px) scale(1.02);
+}
+
+.show_password {
+    width: 25px;
+    height: 25px;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+}
+
+.show_password:hover {
+    opacity: 0.5;
+    cursor: pointer;
+}
+
+.login_form_group_password_input {
+    position: relative;
 }
