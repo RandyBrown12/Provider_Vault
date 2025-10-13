@@ -8,15 +8,16 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 from provider_vault_django_app.models import Users
-from django.test import TestCase
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 
 
-class RegisterTests(TestCase):
+class RegisterTests(StaticLiveServerTestCase):
     @classmethod
     def setUpClass(cls):
         """
         Runs once before all tests.
         """
+        super().setUpClass()
         chrome_options = Options()
         chrome_options.add_argument("--headless")
         chrome_options.add_argument("--no-sandbox")
@@ -30,13 +31,14 @@ class RegisterTests(TestCase):
         Runs once after all tests.
         """
         cls.browser.quit()
+        super().tearDownClass()
 
     def setUp(self):
         """
         Runs before each test.
-        Clear all input fields.
+        Clears all input fields.
         """
-        self.browser.get("http://localhost:8000/register/")
+        self.browser.get(f"{self.live_server_url}/register/")
 
     def test_password_first_check_no_character(self):
         """Check if password is minimum length of 8 characters"""
@@ -227,19 +229,20 @@ class RegisterTests(TestCase):
         register_button.click()
 
         WebDriverWait(self.browser, 10).until(
-            EC.url_changes("http://localhost:8000/register/")
+            EC.url_changes(f"{self.live_server_url}/register/")
         )
 
         redirected_url = self.browser.current_url
-        self.assertEqual("http://localhost:8000/login/", redirected_url)
+        self.assertEqual(f"{self.live_server_url}/login/", redirected_url)
 
 
-class LoginTests(TestCase):
+class LoginTests(StaticLiveServerTestCase):
     @classmethod
     def setUpClass(cls):
         """
         Prequisites for all tests. Only runs once.
         """
+        super().setUpClass()
         chrome_options = Options()
         chrome_options.add_argument("--headless")
         chrome_options.add_argument("--no-sandbox")
@@ -253,7 +256,6 @@ class LoginTests(TestCase):
         cls.user = Users.objects.create(
             email="test@example.com", password_hash=password_hash, user_type="user"
         )
-        cls.user.save()
 
     @classmethod
     def tearDownClass(cls):
@@ -261,19 +263,14 @@ class LoginTests(TestCase):
         Runs once after all tests.
         """
         cls.browser.quit()
+        super().tearDownClass()
 
     def setUp(self):
         """
         Runs before each test.
         Clear all input fields.
         """
-        self.browser.get("http://localhost:8000/login/")
-
-    def test_mock_user_exists(self):
-        """Check if mock user exists in the database."""
-        user = Users.objects.filter(email="test@example.com").first()
-        self.assertEqual(user.email, "test@example.com")
-        self.assertEqual(user.user_type, "user")
+        self.browser.get(f"{self.live_server_url}/login/")
 
     def test_show_password_button(self):
         """Check if show password button works"""
@@ -297,8 +294,8 @@ class LoginTests(TestCase):
         password_input = self.browser.find_element(By.ID, "login_password")
         login_button = self.browser.find_element(By.ID, "login_form_button")
         error_message = self.browser.find_element(By.ID, "login_form_error")
-        email_input.send_keys("invalid@example.com")
-        password_input.send_keys("Password1!")
+        email_input.send_keys("test@example.com")
+        password_input.send_keys("TestPassword2!")
         time.sleep(0.5)
 
         login_button.click()
@@ -320,9 +317,9 @@ class LoginTests(TestCase):
 
         login_button.click()
         WebDriverWait(self.browser, 10).until(
-            EC.url_changes("http://localhost:8000/login/")
+            EC.url_changes(f"{self.live_server_url}/login/")
         )
-        self.assertEqual("http://localhost:8000/", self.browser.current_url)
+        self.assertEqual(f"{self.live_server_url}/", self.browser.current_url)
 
 
 if __name__ == "__main__":

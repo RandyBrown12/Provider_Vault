@@ -42,6 +42,12 @@ def login_to_database(request):
             "Please enter both email and password!", content_type="text/html"
         )
 
+    check_password_requirements_message = check_password_requirements(password)
+    if check_password_requirements_message != "":
+        return HttpResponse(
+            check_password_requirements_message, content_type="text/html"
+        )
+
     try:
         user = Users.objects.filter(email=email).first()
 
@@ -52,7 +58,6 @@ def login_to_database(request):
             stored_password_hash = bytes(user.password_hash)
         else:
             stored_password_hash = user.password_hash
-        print(stored_password_hash)
         if bcrypt.checkpw(password.encode("utf-8"), stored_password_hash):
             return HttpResponse("Passwords match!", content_type="text/html")
         else:
@@ -80,10 +85,9 @@ def register_to_database(request):
     try:
         password_bytes = bytes(password, "utf-8")
         password_hash = bcrypt.hashpw(password_bytes, bcrypt.gensalt())
-        user = Users.objects.create(
+        Users.objects.get_or_create(
             email=email, password_hash=password_hash, user_type="user"
         )
-        user.save()
         return HttpResponse("Registration Successful!", content_type="text/html")
     except Exception as e:
         return HttpResponse(f"An error occurred: {str(e)}", content_type="text/html")
@@ -109,35 +113,30 @@ def check_password(request):
     """
     View to validate password constraints.
 
-    Constraints:
-    - Minimum length of 8 characters
-    - Must contain both uppercase and lowercase letters
-    - Must include at least one number
-    - Must include at least one special character (!@#$%^&*)
-
     Expects POST with 'password'.
     """
+
     password = request.POST.get("password", "")
-    if not password:
-        return HttpResponse("Please enter a Password!", content_type="text/html")
-    elif len(password) < 8:
-        return HttpResponse(
-            "Password must be at least 8 characters long!", content_type="text/html"
-        )
+    check_password_requirements_message = check_password_requirements(password)
+    return HttpResponse(check_password_requirements_message, content_type="text/html")
+
+
+def check_password_requirements(password) -> str:
+    """
+    Helper function to validate password constraints.
+
+    Returns a string with the error message if any constraint is violated,
+    otherwise returns an empty string.
+    """
+    if len(password) < 8:
+        return "Password must be at least 8 characters long!"
     elif not any(character.islower() for character in password) or not any(
         character.isupper() for character in password
     ):
-        return HttpResponse(
-            "Password must contain both uppercase and lowercase letters!",
-            content_type="text/html",
-        )
+        return "Password must contain both uppercase and lowercase letters!"
     elif not any(character.isdigit() for character in password):
-        return HttpResponse(
-            "Password must include at least one number!", content_type="text/html"
-        )
+        return "Password must include at least one number!"
     elif not any(character in "!@#$%^&*" for character in password):
-        return HttpResponse(
-            "Password must include at least one special character (!@#$%^&*)!",
-            content_type="text/html",
-        )
-    return HttpResponse("", content_type="text/html")
+        return "Password must include at least one special character (!@#$%^&*)!"
+
+    return ""
