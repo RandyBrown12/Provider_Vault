@@ -6,8 +6,12 @@
 #   * Remove `` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.utils import timezone
-import uuid
 from django.db import models
+from django.contrib.auth.models import (
+    AbstractBaseUser,
+    BaseUserManager,
+    PermissionsMixin,
+)
 
 
 class Certifications(models.Model):
@@ -359,18 +363,55 @@ class UserActionLog(models.Model):
         db_table = "user_action_log"
 
 
-class Users(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+class UsersManager(BaseUserManager):
+    def create_user(self, email, password=None, **extra_fields):
+        if not email:
+            raise ValueError("The Email field must be set")
+        extra_fields.setdefault("user_type", "User")
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, password=None, **extra_fields):
+        extra_fields.setdefault("user_type", "Admin")
+
+        if extra_fields.get("user_type") != "Admin":
+            raise ValueError("Superuser must have user_type='Admin'")
+
+        return self.create_user(email, password, **extra_fields)
+
+
+class Users(AbstractBaseUser, PermissionsMixin):
     email = models.CharField(unique=True)
-    password_hash = models.BinaryField()
     user_type = models.CharField()
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)
     is_active = models.BooleanField(default=True)
     last_login = models.DateTimeField(default=timezone.now)
 
+    objects = UsersManager()
+
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = []
+
     class Meta:
         db_table = "users"
+
+    @property
+    def is_staff(self):
+        return self.user_type == "Admin"
+
+    @property
+    def is_superuser(self):
+        return self.user_type == "Admin"
+
+    def has_module_perms(self, app_label):
+        return self.user_type == "Admin"
+
+    def has_perm(self, perm, obj=None):
+        return self.user_type == "Admin"
 
 
 class IPBlock(models.Model):

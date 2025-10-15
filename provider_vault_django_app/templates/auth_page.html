@@ -1,0 +1,24 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Provider Vault - Login</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <script src="{% static 'js/app.js' %}"></script>
+</head>
+<body class="login_form_background">
+    <div class="login_form_container">
+        <form class="login_form_form" autocomplete="off">
+            {% csrf_token %}
+            <h1 class="login_form_title">Multi-Factor Authentication</h1>
+            <p> We have sent an email with passcode. Please enter the item </p>
+            <input> </input>
+            <button> Submit Button </button>
+        </form>
+    </div>
+</body>
+</html>

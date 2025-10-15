@@ -17,6 +17,7 @@ Including another URLconf
 
 from django.urls import path
 from .views import (
+    auth,
     check_match,
     check_password,
     home,
@@ -34,6 +35,7 @@ urlpatterns = [
     path("login/", login, name="login"),
     path("login_to_database/", login_to_database, name="login_to_database"),
     path("register_to_database/", register_to_database, name="register_to_database"),
+    path("auth/", auth, name="auth"),
     path(
         "check_match/", check_match, name="check_match"
     ),  # HTMX endpoint for element text matching

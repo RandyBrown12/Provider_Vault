@@ -3,7 +3,6 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.decorators.http import require_POST
 import dotenv
-import bcrypt
 from .models import Users
 
 dotenv.load_dotenv()
@@ -24,6 +23,10 @@ def register(request):
 
 def login(request):
     return render(request, "login.html")
+
+
+def auth(request):
+    return render(request, "auth_page.html")
 
 
 @require_POST
@@ -53,12 +56,8 @@ def login_to_database(request):
 
         if user is None:
             return HttpResponse("Invalid email or password!", content_type="text/html")
-        stored_password_hash = None
-        if isinstance(user.password_hash, memoryview):
-            stored_password_hash = bytes(user.password_hash)
-        else:
-            stored_password_hash = user.password_hash
-        if bcrypt.checkpw(password.encode("utf-8"), stored_password_hash):
+
+        if user.check_password(password):
             return HttpResponse("Passwords match!", content_type="text/html")
         else:
             return HttpResponse("Incorrect password!", content_type="text/html")
@@ -83,11 +82,9 @@ def register_to_database(request):
             "Please enter both email and password!", content_type="text/html"
         )
     try:
-        password_bytes = bytes(password, "utf-8")
-        password_hash = bcrypt.hashpw(password_bytes, bcrypt.gensalt())
-        Users.objects.get_or_create(
-            email=email, password_hash=password_hash, user_type="user"
-        )
+        user = Users.objects.create_user(email=email, user_type="User")
+        user.set_password(password)
+        user.save()
         return HttpResponse("Registration Successful!", content_type="text/html")
     except Exception as e:
         return HttpResponse(f"An error occurred: {str(e)}", content_type="text/html")

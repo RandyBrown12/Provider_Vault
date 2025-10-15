@@ -8,7 +8,8 @@ CREATE TABLE "users" (
   "created_at" timestamp NOT NULL DEFAULT NOW(),
   "updated_at" timestamp NOT NULL DEFAULT NOW(),
   "is_active" boolean NOT NULL DEFAULT TRUE,
-  "last_login" timestamp NOT NULL DEFAULT NOW()
+  "last_login" timestamp NOT NULL DEFAULT NOW(),
+  "is_authenticated" boolean NOT NULL DEFAULT TRUE
 );
 
 CREATE TABLE "providers" (

@@ -1,6 +1,5 @@
 import time
 import unittest
-import bcrypt
 from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -249,13 +248,10 @@ class LoginTests(StaticLiveServerTestCase):
         chrome_options.add_argument("--disable-dev-shm-usage")
 
         cls.browser = webdriver.Chrome(options=chrome_options)
-        password_hash = bcrypt.hashpw(
-            "TestPassword1!".encode("utf-8"), bcrypt.gensalt()
-        )
 
-        cls.user = Users.objects.create(
-            email="test@example.com", password_hash=password_hash, user_type="user"
-        )
+        user = Users.objects.create_user(email="test@example.com", user_type="User")
+        user.set_password("TestPassword1!")
+        user.save()
 
     @classmethod
     def tearDownClass(cls):
