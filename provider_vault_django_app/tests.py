@@ -1,5 +1,6 @@
 import time
 import unittest
+import requests
 from selenium.webdriver.chrome.options import Options
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -243,15 +244,11 @@ class LoginTests(StaticLiveServerTestCase):
         """
         super().setUpClass()
         chrome_options = Options()
-        chrome_options.add_argument("--headless")
+        # chrome_options.add_argument("--headless")
         chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument("--disable-dev-shm-usage")
 
         cls.browser = webdriver.Chrome(options=chrome_options)
-
-        user = Users.objects.create_user(email="test@example.com", user_type="User")
-        user.set_password("TestPassword1!")
-        user.save()
 
     @classmethod
     def tearDownClass(cls):
@@ -266,6 +263,9 @@ class LoginTests(StaticLiveServerTestCase):
         Runs before each test.
         Clear all input fields.
         """
+        user = Users.objects.create_user(email="test@example.com", user_type="User")
+        user.set_password("TestPassword1!")
+        user.save()
         self.browser.get(f"{self.live_server_url}/login/")
 
     def test_show_password_button(self):
@@ -284,8 +284,8 @@ class LoginTests(StaticLiveServerTestCase):
         time.sleep(0.5)
         self.assertEqual("password", password_input.get_attribute("type"))
 
-    def test_login_incorrect_email(self):
-        """Check if login fails with incorrect email"""
+    def test_login_incorrect_auth(self):
+        """Check if login fails with incorrect auth"""
         email_input = self.browser.find_element(By.ID, "email")
         password_input = self.browser.find_element(By.ID, "login_password")
         login_button = self.browser.find_element(By.ID, "login_form_button")
@@ -312,10 +312,16 @@ class LoginTests(StaticLiveServerTestCase):
         time.sleep(0.5)
 
         login_button.click()
-        WebDriverWait(self.browser, 10).until(
+        WebDriverWait(self.browser, 3).until(
             EC.url_changes(f"{self.live_server_url}/login/")
         )
-        self.assertIn(f"{self.live_server_url}/auth", self.browser.current_url)
+
+        page_text = self.browser.find_element("tag name", "body").text
+        self.assertNotIn("You do not have permission to access this page!", page_text)
+
+    def test_forbidden_auth_page(self):
+        response = requests.get(f"{self.live_server_url}/auth/?token=abc")
+        self.assertEqual(403, response.status_code)
 
 
 if __name__ == "__main__":

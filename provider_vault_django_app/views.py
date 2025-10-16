@@ -1,6 +1,6 @@
 import json
 from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from django.views.decorators.http import require_POST
 import dotenv
 from .models import Users
@@ -29,6 +29,11 @@ def login(request):
 
 
 def auth(request):
+    token = request.GET.get("token")
+    email = cache.get(f"mfa:{token}")
+    if email is None:
+        return HttpResponseForbidden("You do not have permission to access this page!")
+
     return render(request, "auth_page.html")
 
 
@@ -57,7 +62,7 @@ def login_to_database(request):
             return JsonResponse({"message": "Invalid email or password!"})
 
         django_cache_token = get_random_string(32)
-        cache.set(f"mfa:{django_cache_token}", user.email, timeout=300)
+        cache.set(f"mfa:{django_cache_token}", email, timeout=300)
         return JsonResponse(
             {"message": "Passwords match!", "token": django_cache_token}
         )
