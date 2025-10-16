@@ -1,9 +1,12 @@
 import json
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.views.decorators.http import require_POST
 import dotenv
 from .models import Users
+from django.core.cache import cache
+from django.contrib.auth import authenticate
+from django.utils.crypto import get_random_string
 
 dotenv.load_dotenv()
 
@@ -41,29 +44,26 @@ def login_to_database(request):
     password = data.get("password", "")
 
     if not email or not password:
-        return HttpResponse(
-            "Please enter both email and password!", content_type="text/html"
-        )
+        return JsonResponse({"message": "Please enter both email and password!"})
 
     check_password_requirements_message = check_password_requirements(password)
     if check_password_requirements_message != "":
-        return HttpResponse(
-            check_password_requirements_message, content_type="text/html"
-        )
+        return JsonResponse({"message": check_password_requirements_message})
 
     try:
-        user = Users.objects.filter(email=email).first()
+        user = authenticate(request, email=email, password=password)
 
         if user is None:
-            return HttpResponse("Invalid email or password!", content_type="text/html")
+            return JsonResponse({"message": "Invalid email or password!"})
 
-        if user.check_password(password):
-            return HttpResponse("Passwords match!", content_type="text/html")
-        else:
-            return HttpResponse("Incorrect password!", content_type="text/html")
+        django_cache_token = get_random_string(32)
+        cache.set(f"mfa:{django_cache_token}", user.email, timeout=300)
+        return JsonResponse(
+            {"message": "Passwords match!", "token": django_cache_token}
+        )
     except Exception as e:
-        print(str(e))
-        return HttpResponse("An error occurred", content_type="text/html")
+        print(f"Login Error: {str(e)}")
+        return JsonResponse({"message": "An error occurred"})
 
 
 @require_POST
@@ -78,16 +78,15 @@ def register_to_database(request):
     password = data.get("password", "")
 
     if not email or not password:
-        return HttpResponse(
-            "Please enter both email and password!", content_type="text/html"
-        )
+        return JsonResponse({"message": "Please enter both email and password!"})
     try:
         user = Users.objects.create_user(email=email, user_type="User")
         user.set_password(password)
         user.save()
-        return HttpResponse("Registration Successful!", content_type="text/html")
+        return JsonResponse({"message": "Registration Successful!"})
     except Exception as e:
-        return HttpResponse(f"An error occurred: {str(e)}", content_type="text/html")
+        print(f"Registration Error: {str(e)}")
+        return JsonResponse({"message": "An error occurred"})
 
 
 @require_POST

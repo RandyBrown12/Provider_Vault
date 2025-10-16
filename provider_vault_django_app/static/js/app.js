@@ -34,14 +34,13 @@ async function register_user() {
         return;
     }
 
-    const response_text = await register_to_database(email, password);
+    const response_json = await register_to_database(email, password);
 
-    if(response_text === "Registration Successful!") {
+    if(response_json.message === "Registration Successful!") {
         window.location.href = "/login"
     } else {
-        window.alert(`${response_text}`);
+        window.alert(`${response_json.message}`);
     }
-
 }
 
 async function login_user() {
@@ -56,14 +55,13 @@ async function login_user() {
         return;
     }
 
-    const response_text = await login_to_database(email, password);
+    const response_json = await login_to_database(email, password);
 
-    console.log(response_text);
-    if(response_text === "Passwords match!") {
-        window.location.href = "/"
+    if(response_json.message === "Passwords match!") {
+        window.location.href = `/auth/?token=${response_json.token}`;
     } else {
         const login_error_element = document.getElementById('login_form_error');
-        login_error_element.innerText = response_text;
+        login_error_element.innerText = response_json.message;
     }
 }
 
@@ -86,7 +84,7 @@ async function register_to_database(email, password) {
             throw new Error("4XX or 5XX error");
         }
 
-        const data = await response.text();
+        const data = await response.json();
         return data;
     } catch (error) {
         console.log("Fetch error:", error.message);
@@ -112,7 +110,7 @@ async function login_to_database(email, password) {
             throw new Error("4XX or 5XX error");
         }
 
-        const data = await response.text();
+        const data = await response.json();
         return data;
     } catch (error) {
         console.log("Fetch error:", error.message);

@@ -315,7 +315,7 @@ class LoginTests(StaticLiveServerTestCase):
         WebDriverWait(self.browser, 10).until(
             EC.url_changes(f"{self.live_server_url}/login/")
         )
-        self.assertEqual(f"{self.live_server_url}/", self.browser.current_url)
+        self.assertIn(f"{self.live_server_url}/auth", self.browser.current_url)
 
 
 if __name__ == "__main__":

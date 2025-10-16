@@ -399,6 +399,7 @@ class Users(AbstractBaseUser, PermissionsMixin):
     class Meta:
         db_table = "users"
 
+    # is_staff and is_superuser are defaults for admin page.
     @property
     def is_staff(self):
         return self.user_type == "Admin"
