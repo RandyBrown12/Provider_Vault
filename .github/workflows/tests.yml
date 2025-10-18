@@ -52,6 +52,8 @@ jobs:
       - name: Test connection
         run: |
           psql -h localhost -U postgres -d postgres -c '\conninfo'
+        env:
+          PGPASSWORD: ${{ env.DB_PASSWORD }}
       - name: Run Tests
         run: |
           source .venv/bin/activate
