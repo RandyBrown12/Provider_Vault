@@ -3,7 +3,7 @@ name: GitHub Workflow to Perform Testing.
 env:
   POSTGRES_USER: postgres
   POSTGRES_PASSWORD: postgres # pragma: allowlist secret
-  POSTGRES_DB: github_vault
+  POSTGRES_DB: postgres
 
 on:
   push:
