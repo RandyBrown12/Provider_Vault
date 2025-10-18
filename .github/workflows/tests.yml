@@ -1,9 +1,9 @@
 name: GitHub Workflow to Perform Testing.
 
 env:
-  POSTGRES_USER: postgres
-  POSTGRES_PASSWORD: postgres # pragma: allowlist secret
-  POSTGRES_DB: postgres
+  DB_USERNAME: postgres
+  DB_PASSWORD: postgres # pragma: allowlist secret
+  DB_NAME: postgres
 
 on:
   push:
@@ -20,9 +20,9 @@ jobs:
       postgres:
         image: postgres:latest
         env:
-          POSTGRES_USER: ${{ env.POSTGRES_USER }}
-          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
-          POSTGRES_DB: ${{ env.POSTGRES_DB }}
+          POSTGRES_USER: ${{ env.DB_USERNAME}}
+          POSTGRES_PASSWORD: ${{ env.DB_PASSWORD }}
+          POSTGRES_DB: ${{ env.DB_NAME }}
         ports:
           - 5432:5432
     steps:
@@ -55,6 +55,3 @@ jobs:
           python manage.py test
         env:
           ENVIRONMENT_STAGE: TEST
-          DB_USERNAME: ${{ env.POSTGRES_USER }}
-          DB_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
-          DB_NAME: ${{ env.POSTGRES_DB }}
