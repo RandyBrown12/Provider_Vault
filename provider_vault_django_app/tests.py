@@ -244,7 +244,7 @@ class LoginTests(StaticLiveServerTestCase):
         """
         super().setUpClass()
         chrome_options = Options()
-        # chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--headless")
         chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument("--disable-dev-shm-usage")
 
@@ -322,6 +322,84 @@ class LoginTests(StaticLiveServerTestCase):
     def test_forbidden_auth_page(self):
         response = requests.get(f"{self.live_server_url}/auth/?token=abc")
         self.assertEqual(403, response.status_code)
+
+
+class AdminTests(StaticLiveServerTestCase):
+    @classmethod
+    def setUpClass(cls):
+        """
+        Prequisites for all tests. Only runs once.
+        """
+        super().setUpClass()
+        chrome_options = Options()
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("--disable-dev-shm-usage")
+
+        cls.browser = webdriver.Chrome(options=chrome_options)
+
+    @classmethod
+    def tearDownClass(cls):
+        """
+        Runs once after all tests.
+        """
+        cls.browser.quit()
+        super().tearDownClass()
+
+    def setUp(self):
+        """
+        Runs before each test.
+        Clear all input fields.
+        """
+        user = Users.objects.create_user(email="test@example.com", user_type="Admin")
+        user.set_password("TestPassword1!")
+        user.save()
+        self.browser.get(f"{self.live_server_url}/admin/")
+
+    def test_incorrect_crendentials(self):
+        email_input = self.browser.find_element(By.ID, "id_username")
+        password_input = self.browser.find_element(By.ID, "id_password")
+        log_in_button = self.browser.find_element(
+            By.CSS_SELECTOR, 'input[value="Log in"]'
+        )
+        email_input.send_keys("test@example.com")
+        password_input.send_keys("TestPassword2!")
+        time.sleep(0.5)
+
+        log_in_button.click()
+        WebDriverWait(self.browser, 3).until(
+            EC.url_changes(f"{self.live_server_url}/auth/")
+        )
+
+        error_text = self.browser.find_element(By.CLASS_NAME, "errornote").text
+        self.assertEqual(
+            "Please enter the correct email and password for a staff account. Note that both fields may be case-sensitive.",
+            error_text,
+        )
+
+    def test_correct_crendentials(self):
+        """
+        Verify if we can access the page alongside checking to see if we have a user table for admin.
+        """
+        email_input = self.browser.find_element(By.ID, "id_username")
+        password_input = self.browser.find_element(By.ID, "id_password")
+        log_in_button = self.browser.find_element(
+            By.CSS_SELECTOR, 'input[value="Log in"]'
+        )
+        email_input.send_keys("test@example.com")
+        password_input.send_keys("TestPassword1!")
+        time.sleep(0.5)
+
+        log_in_button.click()
+        WebDriverWait(self.browser, 3).until(
+            EC.url_changes(f"{self.live_server_url}/auth/")
+        )
+
+        self.assertEqual("Site administration | Django site admin", self.browser.title)
+
+        th_element = self.browser.find_element(By.ID, "provider_vault_django_app-users")
+        users_text = th_element.find_element(By.TAG_NAME, "a").text
+        self.assertEqual("Userss", users_text)
 
 
 if __name__ == "__main__":
