@@ -1,5 +1,10 @@
 name: GitHub Workflow to Perform Testing.
 
+env:
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: postgres # pragma: allowlist secret
+  POSTGRES_DB: github_vault
+
 on:
   push:
     branches:
@@ -11,6 +16,15 @@ on:
 jobs:
   RunTests:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: ${{ env.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ env.POSTGRES_DB }}
+        ports:
+          - 5432:5432
     steps:
       - name: Checkout Code from this repository
         uses: actions/checkout@v4
@@ -41,3 +55,6 @@ jobs:
           python manage.py test
         env:
           ENVIRONMENT_STAGE: TEST
+          DB_USERNAME: ${{ env.POSTGRES_USER }}
+          DB_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
+          DB_NAME: ${{ env.POSTGRES_DB }}
