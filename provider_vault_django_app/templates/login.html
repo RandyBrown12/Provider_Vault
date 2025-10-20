@@ -31,13 +31,13 @@
                         required
                     />
                     <img
-                        id="toggle_password"
+                        id="toggle_login_password"
                         src="{% static 'img/eye.svg' %}"
                         alt="Eye"
                         class="show_password"
-                        onclick="show_password_toggle()"
+                        onclick="show_password_toggle('login_password','toggle_login_password')"
                     >
-                </img>
+                    </img>
                 </div>
             </div>
             <button type="button" onclick="login_user()" id="login_form_button" class="login_form_button">Login</button>

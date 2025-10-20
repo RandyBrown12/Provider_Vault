@@ -2,7 +2,7 @@ async function register_user() {
     const firstName = document.getElementById('first_name').value;
     const lastName = document.getElementById('last_name').value;
     const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
+    const password = document.getElementById('register_password').value;
     const confirmPassword = document.getElementById('confirm_password').value;
     const password_error_message = document.getElementById('password_check_msg').innerText;
     const confirm_password_error_message = document.getElementById('password_match_msg').innerText;
@@ -125,9 +125,17 @@ function getCookie(name) {
 
 const csrftoken = getCookie("csrftoken");
 
-function show_password_toggle() {
-    const password_element = document.getElementById("login_password");
-    const password_icon = document.getElementById("toggle_password");
+function show_password_toggle(password_input_id, password_icon_id) {
+    const password_element = document.getElementById(password_input_id);
+    const password_icon = document.getElementById(password_icon_id);
+
+    if(!password_element) {
+        window.alert(`Password input id: ${password_input_id} not found!`)
+        return
+    } else if (!password_icon) {
+        window.alert(`Password icon id: ${password_icon_id} not found!`)
+        return
+    }
 
     if(password_element.type === "password") {
         password_element.type = "text";

@@ -52,6 +52,7 @@
     background: #f7fafc;
     transition: border-color 0.2s;
     font-family: inherit;
+    width: 92%;
 }
 
 .register_form_input:focus {
@@ -198,5 +199,9 @@
 }
 
 .login_form_group_password_input {
+    position: relative;
+}
+
+.register_form_group_password_input {
     position: relative;
 }
